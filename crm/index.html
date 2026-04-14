@@ -1,0 +1,381 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phoenix Plants CRM</title>
+<style>
+:root{
+  --font-sans:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
+  --color-text-primary:#1f2937;
+  --color-text-secondary:#6b7280;
+  --color-text-tertiary:#9ca3af;
+  --color-text-info:#ffffff;
+  --color-background-primary:#ffffff;
+  --color-background-secondary:#f8fafc;
+  --color-background-tertiary:#eef2f7;
+  --color-background-info:#185fa5;
+  --color-border-secondary:#cbd5e1;
+  --color-border-tertiary:#e2e8f0;
+  --color-border-info:#185fa5;
+  --border-radius-md:10px;
+  --border-radius-lg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);font-size:14px;color:var(--color-text-primary);background:var(--color-background-tertiary)}
+.app{display:flex;height:100vh;min-height:600px}
+.sidebar{width:220px;min-width:220px;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;overflow-y:auto}
+.logo{padding:16px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.logo-title{font-size:13px;font-weight:500;color:var(--color-text-primary);line-height:1.3}
+.logo-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.nav-section{padding:8px 0}
+.nav-label{font-size:10px;font-weight:500;color:var(--color-text-tertiary);padding:6px 16px 4px;text-transform:uppercase;letter-spacing:0.5px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 16px;cursor:pointer;font-size:13px;color:var(--color-text-secondary);border-left:2px solid transparent;transition:all 0.15s}
+.nav-item:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.nav-item.active{background:var(--color-background-info);color:var(--color-text-info);border-left-color:var(--color-border-info);font-weight:500}
+.nav-icon{font-size:14px;width:16px;text-align:center}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:12px 20px;background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between}
+.page-title{font-size:16px;font-weight:500}
+.topbar-right{display:flex;gap:8px;align-items:center}
+.topbar-select{padding:6px 10px;border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:12px;background:var(--color-background-primary);color:var(--color-text-primary)}
+.topbar-select:focus{outline:none;border-color:var(--color-border-info);box-shadow:0 0 0 3px rgba(24,95,165,0.12)}
+.btn{padding:6px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary)}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-primary{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info)}
+.btn-primary:hover{opacity:0.85}
+.content{flex:1;overflow-y:auto;padding:20px}
+.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.products-toolbar{gap:12px;flex-wrap:wrap}
+.products-filter-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.kpi-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:14px 16px}
+.kpi-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px}
+.kpi-value{font-size:22px;font-weight:500}
+.kpi-sub{font-size:11px;color:var(--color-text-secondary);margin-top:3px}
+.kpi-green{color:#3B6D11}.kpi-orange{color:#BA7517}.kpi-red{color:#A32D2D}.kpi-blue{color:#185FA5}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px;margin-bottom:16px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-title{font-size:14px;font-weight:500}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 10px;font-weight:500;font-size:11px;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase;letter-spacing:0.3px}
+td{padding:9px 10px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--color-background-secondary)}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-green{background:#EAF3DE;color:#27500A}
+.badge-orange{background:#FAEEDA;color:#633806}
+.badge-red{background:#FCEBEB;color:#501313}
+.badge-blue{background:#E6F1FB;color:#0C447C}
+.badge-gray{background:#F1EFE8;color:#444441}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.form-group{display:flex;flex-direction:column;gap:6px;min-width:0}
+.form-group.full-span{grid-column:1/-1}
+.form-group label{font-size:12px;font-weight:500;color:var(--color-text-secondary)}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary)}
+.form-group textarea{resize:vertical;min-height:70px}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--color-border-info);box-shadow:0 0 0 3px rgba(24,95,165,0.12)}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;padding:16px 20px;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ai-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:14px;margin-top:14px}
+.ai-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ai-response{font-size:13px;line-height:1.6;color:var(--color-text-primary);white-space:pre-wrap}
+.ai-input-row{display:flex;gap:8px;margin-top:10px}
+.ai-input-row input{flex:1;padding:7px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary)}
+.tab-row{display:flex;gap:2px;margin-bottom:16px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.tab{padding:8px 14px;font-size:13px;cursor:pointer;color:var(--color-text-secondary);border-bottom:2px solid transparent;margin-bottom:-0.5px}
+.tab.active{color:var(--color-text-info);border-bottom-color:var(--color-border-info);font-weight:500}
+.aging-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;gap:2px;margin-top:4px}
+.aging-seg{height:100%;border-radius:2px}
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;z-index:100}
+.modal{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);width:min(760px,calc(100vw - 24px));max-height:min(88vh,860px);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 18px 50px rgba(17,24,39,0.18)}
+.modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.modal-body{padding:18px 20px 20px;overflow-y:auto}
+.modal-title{font-size:18px;font-weight:600;color:var(--color-text-primary);line-height:1.2}
+.modal-subtitle{font-size:12px;color:var(--color-text-secondary);margin-top:4px}
+.entry-note{padding:12px 14px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-size:12px;color:var(--color-text-secondary);margin-bottom:18px;line-height:1.5}
+.close-btn{cursor:pointer;font-size:22px;line-height:1;color:var(--color-text-secondary);background:none;border:none;padding:2px 4px}
+.close-btn:hover{color:var(--color-text-primary)}
+.alert{padding:10px 14px;border-radius:var(--border-radius-md);font-size:13px;margin-bottom:12px}
+.alert-success{background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97}
+.alert-warning{background:#FAEEDA;color:#633806;border:0.5px solid #FAC775}
+.empty-state{text-align:center;padding:40px 20px;color:var(--color-text-secondary)}
+.progress-bar{height:4px;background:var(--color-border-tertiary);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;background:#185FA5;transition:width 0.3s}
+@media (max-width:768px){
+  .app{padding:8px;height:auto;min-height:100vh}
+  .sidebar{display:none}
+  .content{padding:14px}
+  .kpi-grid,.two-col,.form-grid{grid-template-columns:1fr}
+  .topbar{padding:12px 14px;flex-direction:column;align-items:stretch;gap:12px}
+  .topbar-left,.topbar-right{width:100%}
+  .topbar-right{gap:8px;flex-wrap:wrap;justify-content:stretch}
+  .topbar-right > *{flex:1 1 100%}
+  .topbar-select,.topbar-right .btn{width:100%}
+  .topbar-links{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
+  .topbar-link{white-space:nowrap}
+  .card{padding:14px}
+  .card-header{flex-direction:column;align-items:flex-start;gap:10px}
+  .products-toolbar,.products-filter-group{width:100%}
+  .products-filter-group .topbar-select{width:100%}
+  table{min-width:720px}
+  .modal-header,.modal-body,.form-actions{padding-left:14px;padding-right:14px}
+  .form-actions{flex-direction:column-reverse}
+  .form-actions .btn{width:100%}
+}
+</style>
+
+<style>
+/* Professional visual upgrade overrides */
+:root{
+  --font-sans:"Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --color-text-primary:#0f172a;
+  --color-text-secondary:#475569;
+  --color-text-tertiary:#64748b;
+  --color-text-info:#ffffff;
+  --color-background-primary:#ffffff;
+  --color-background-secondary:#f7fafc;
+  --color-background-tertiary:#eef3f8;
+  --color-background-info:#0f4c81;
+  --color-border-secondary:#cbd5e1;
+  --color-border-tertiary:#e2e8f0;
+  --color-border-info:#0f4c81;
+  --border-radius-md:12px;
+  --border-radius-lg:18px;
+}
+
+body{
+  background:
+    radial-gradient(circle at 8% 10%, #dbeafe 0%, transparent 28%),
+    radial-gradient(circle at 92% 88%, #dcfce7 0%, transparent 26%),
+    var(--color-background-tertiary);
+}
+
+.app{
+  padding:14px;
+  height:100vh;
+  gap:14px;
+}
+
+.sidebar,
+.main{
+  border:1px solid var(--color-border-tertiary);
+  border-radius:18px;
+  box-shadow:0 10px 28px rgba(15, 23, 42, 0.05);
+}
+
+.sidebar{
+  border-right:1px solid var(--color-border-tertiary);
+}
+
+.logo{
+  padding:18px 16px;
+  background:linear-gradient(140deg, #0f4c81 0%, #16619f 100%);
+  border-bottom:0;
+}
+
+.logo-title,
+.logo-sub{
+  color:#eff6ff;
+}
+
+.logo-title{
+  font-weight:600;
+  letter-spacing:0.2px;
+}
+
+.logo-sub{
+  opacity:0.9;
+}
+
+.nav-item{
+  border-left:0;
+  border-radius:10px;
+  margin:2px 8px;
+  padding:8px 10px;
+}
+
+.nav-item.active{
+  background:linear-gradient(140deg, #0f4c81 0%, #16619f 100%);
+  border-left:0;
+}
+
+.nav-icon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:#e2e8f0;
+  color:#0f4c81;
+  font-size:11px;
+  font-weight:600;
+}
+
+.nav-item.active .nav-icon{
+  background:rgba(255,255,255,0.22);
+  color:#ffffff;
+}
+
+.topbar{
+  border-bottom:1px solid var(--color-border-tertiary);
+  padding:14px 20px;
+}
+
+.page-title{
+  font-size:18px;
+  font-weight:650;
+  letter-spacing:0.2px;
+}
+
+.btn{
+  border:1px solid var(--color-border-secondary);
+  font-weight:600;
+}
+
+.btn-primary{
+  background:linear-gradient(140deg, #0f4c81 0%, #16619f 100%);
+}
+.topbar-left{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.topbar-links{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.topbar-link{
+  display:inline-flex;
+  align-items:center;
+  padding:6px 10px;
+  border:1px solid var(--color-border-secondary);
+  border-radius:999px;
+  background:var(--color-background-primary);
+  color:var(--color-text-secondary);
+  text-decoration:none;
+  font-size:12px;
+  font-weight:600;
+}
+.topbar-link:hover{
+  color:var(--color-background-info);
+  border-color:var(--color-border-info);
+}
+
+.content{
+  padding:20px;
+}
+
+.kpi-card{
+  background:#ffffff;
+  border:1px solid var(--color-border-tertiary);
+  box-shadow:0 6px 18px rgba(15, 23, 42, 0.05);
+}
+
+.card{
+  border:1px solid var(--color-border-tertiary);
+  box-shadow:0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+th{
+  font-weight:600;
+}
+
+td{
+  color:#1e293b;
+}
+
+.modal{
+  border:1px solid var(--color-border-tertiary);
+  box-shadow:0 20px 48px rgba(15, 23, 42, 0.2);
+}
+
+@media (max-width:768px){
+  .app{padding:0;gap:0}
+  .main{border-radius:0;border-left:0;border-right:0;border-bottom:0}
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-title">Phoenix Plants</div>
+    <div class="logo-sub">Lifesaver Pvt. Ltd.</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Overview</div>
+    <div class="nav-item active" onclick="nav('dashboard')"><span class="nav-icon">DB</span>Dashboard</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Sales</div>
+    <div class="nav-item" onclick="nav('sales')"><span class="nav-icon">SL</span>Sales</div>
+    <div class="nav-item" onclick="nav('orders')"><span class="nav-icon">OR</span>Orders</div>
+    <div class="nav-item" onclick="nav('dispatch')"><span class="nav-icon">DP</span>Dispatch</div>
+    <div class="nav-item" onclick="nav('delivery')"><span class="nav-icon">DL</span>Delivery Proof</div>
+    <div class="nav-item" onclick="nav('payments')"><span class="nav-icon">PM</span>Payments</div>
+    <div class="nav-item" onclick="nav('receipts')"><span class="nav-icon">RH</span>Receipt History</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Recovery</div>
+    <div class="nav-item" onclick="nav('recovery')"><span class="nav-icon">RC</span>Recovery Aging</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Masters</div>
+    <div class="nav-item" onclick="nav('dealers')"><span class="nav-icon">DE</span>Dealers</div>
+    <div class="nav-item" onclick="nav('employees')"><span class="nav-icon">EM</span>Employees</div>
+    <div class="nav-item" onclick="nav('products')"><span class="nav-icon">PR</span>Products</div>
+    <div class="nav-item" onclick="nav('transporters')"><span class="nav-icon">TR</span>Transporters</div>
+    <div class="nav-item" id="users-nav" onclick="nav('users')" style="display:none"><span class="nav-icon">US</span>Users</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Inventory</div>
+    <div class="nav-item" onclick="nav('stock')"><span class="nav-icon">ST</span>Stock</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">AI Assistant</div>
+    <div class="nav-item" onclick="nav('ai')"><span class="nav-icon">AI</span>AI CRM Assistant</div>
+    <div class="nav-item" id="audit-nav" onclick="nav('audit')" style="display:none"><span class="nav-icon">LG</span>Audit Logs</div>
+  </div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="page-title" id="page-title">Dashboard</div>
+      <div class="topbar-links">
+        <select id="report-category-filter" class="topbar-select" onchange="onReportCategoryChange()">
+          <option value="" disabled selected>Select Report</option>
+          <option value="orders">Total Order Report</option>
+          <option value="sales">Sales Report</option>
+          <option value="dispatch">Dispatch Report</option>
+          <option value="delivery">Delivery Report</option>
+          <option value="payments">Payments Report</option>
+          <option value="incentive">Incentive Report</option>
+          <option value="recovery">Recovery Report</option>
+          <option value="dealers">Dealers Report</option>
+          <option value="employees">Employees Report</option>
+          <option value="products">Products Report</option>
+          <option value="transporters">Transporters Report</option>
+        </select>
+        <button class="topbar-link" type="button" onclick="printSelectedCategoryReport()">Print Selected Report</button>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div id="user-toolbar"></div>
+      <select id="month-filter" class="topbar-select" onchange="onTopbarFilterChange()"></select>
+      <select id="year-filter" class="topbar-select" onchange="onTopbarFilterChange()"></select>
+      <button class="btn" type="button" onclick="exportAllDataToExcel()">Export Excel</button>
+      <button class="btn btn-primary" id="add-btn" onclick="openAddModal()">+ New Entry</button>
+    </div>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+</div>
+
+<script src="app.js" defer></script>
+ </body>
+</html>
